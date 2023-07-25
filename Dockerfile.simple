@@ -1,0 +1,32 @@
+
+FROM mcr.microsoft.com/dotnet/sdk:7.0-alpine-arm64v8 AS publish
+WORKDIR /src
+COPY ["ExampleApp.csproj", "."]
+
+RUN dotnet restore "./ExampleApp.csproj" --runtime alpine-arm64
+COPY . .
+
+RUN dotnet publish "ExampleApp.csproj" -c Release -o /app/publish \
+    --runtime alpine-arm64 \
+    --no-restore \
+    --self-contained true \
+    /p:PublishTrimmed=true \
+    /p:PublishSingleFile=true
+
+FROM mcr.microsoft.com/dotnet/runtime-deps:7.0-alpine3.17-arm64v8 AS final
+ENV ASPNETCORE_URLS=http://+:5000
+WORKDIR /app
+COPY Scripts/ ./
+COPY sudoers /etc
+
+RUN chmod +x installscript.sh
+RUN chmod +x create-dotnet-user.sh
+RUN ./installscript.sh
+RUN /usr/bin/expect ./create-dotnet-user.sh
+
+USER dotnetuser
+EXPOSE 5000
+
+COPY --from=publish /app/publish .
+
+ENTRYPOINT ["./ExampleApp"]
