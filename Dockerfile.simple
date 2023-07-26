@@ -14,6 +14,7 @@ RUN dotnet publish "ExampleApp.csproj" -c Release -o /app/publish \
     /p:PublishSingleFile=true
 
 FROM mcr.microsoft.com/dotnet/runtime-deps:7.0-alpine3.17-arm64v8 AS final
+# Set server port
 ENV ASPNETCORE_URLS=http://+:5000
 WORKDIR /app
 COPY Scripts/ ./

@@ -1,14 +1,23 @@
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
 using ExampleApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var configuration = builder.Configuration;
+var host = configuration["DBHOST"] ?? "localhost";
+var port = configuration["DBPORT"] ?? "3306";
+var password = configuration["DBPASSWORD"] ?? "mysecret";
+
+var connectionString = $"server={host};port={port};database=products;user=root;password={password};";
+
 builder.Services.AddTransient<IRepository, DummyRepository>();
+builder.Services.AddDbContext<ProductDbContext>(options =>
+    options.UseMySQL(connectionString)
+);
+
+builder.Services.AddSingleton<IConfiguration>(configuration);
+builder.Services.AddTransient<IRepository, ProductRepository>();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -37,5 +46,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+SeedData.EnsurePopulated(app);
 
 app.Run();

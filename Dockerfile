@@ -14,7 +14,7 @@ WORKDIR "/src/."
 RUN dotnet build "ExampleApp.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "ExampleApp.csproj" -c Release -o /app/publish /p:UseAppHost=true
+RUN dotnet publish "ExampleApp.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
@@ -23,7 +23,7 @@ COPY --from=publish /app/publish .
 COPY Scripts/ ./
 
 RUN chmod +x installscript.sh
-RUN chmod +x create-user-script.sh
+RUN chmod +x create-dotnet-user.sh
 
 RUN ./installscript.sh
 
