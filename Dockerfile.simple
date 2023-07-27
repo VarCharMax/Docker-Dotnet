@@ -9,6 +9,7 @@ RUN dotnet publish "ExampleApp.csproj" -c Release -o /app/publish \
   --runtime alpine-arm64 \
   --no-restore \
   --self-contained true \
+  /p:IncludeAllContentForSelfExtract=true \
   /p:PublishTrimmed=true \
   /p:PublishSingleFile=true
 
@@ -21,7 +22,6 @@ COPY Scripts/ ./
 COPY sudoers /etc
 COPY node_modules/wait-for-it.sh/bin/wait-for-it ./wait-for-it.sh
 
-#
 RUN chmod +x wait-for-it.sh \
   && chmod +x installscript.sh \
   && chmod +x create-dotnet-user.sh \
@@ -29,12 +29,10 @@ RUN chmod +x wait-for-it.sh \
   && /usr/bin/expect ./create-dotnet-user.sh
 
 USER dotnetuser
-EXPOSE 5000
+EXPOSE 5000/tcp
 
 COPY --from=publish /app/publish .
 
 ENV WAITHOST=mysql WAITPORT=3306
 
-ENTRYPOINT ./wait-for-it.sh $WAITHOST:$WAITPORT --timeout=0 && exec dotnet ./ExampleApp
-
-# ENTRYPOINT ["./ExampleApp"]
+ENTRYPOINT ./wait-for-it.sh $WAITHOST:$WAITPORT --timeout=0 && exec ./ExampleApp
