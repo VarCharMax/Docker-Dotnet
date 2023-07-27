@@ -1,30 +1,10 @@
+using ExampleApp;
 using ExampleApp.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 
+/*
 var builder = WebApplication.CreateBuilder(args);
-
-var config = new ConfigurationBuilder()
-    .AddCommandLine(args)
-    .AddEnvironmentVariables()
-    .Build();
-
-if ((config["INITDB"] ?? "false") == "true")
-{
-    Console.WriteLine("Preparing datatbase ...");
-    SeedData.EnsurePopulated(new ProductDbContext());
-    Console.WriteLine("Datatbase preparation complete");
-}
-else
-{
-    System.Console.WriteLine("Starting ASP.NET...");
-    var host1 = new WebHostBuilder()
-    .UseConfiguration(config)
-    .UseKestrel()
-    .UseContentRoot(Directory.GetCurrentDirectory())
-    .UseIISIntegration()
-    .Build();
-}
 
 var configuration = builder.Configuration;
 
@@ -45,13 +25,11 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -68,7 +46,29 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+*/
 
-// SeedData.EnsurePopulated(app);
+var config = new ConfigurationBuilder()
+    .AddCommandLine(args)
+    .AddEnvironmentVariables()
+    .Build();
 
-app.Run();
+if ((config["INITDB"] ?? "false") == "true")
+{
+    Console.WriteLine("Preparing datatbase ...");
+    SeedData.EnsurePopulated(new ProductDbContext());
+    Console.WriteLine("Datatbase preparation complete");
+}
+else
+{
+    Console.WriteLine("Starting ASP.NET...");
+    var host = new WebHostBuilder()
+    .UseConfiguration(config)
+    .UseKestrel()
+    .UseContentRoot(Directory.GetCurrentDirectory())
+    .UseIISIntegration()
+    .UseStartup<Startup>()
+    .Build();
+    
+    host.Run();
+}
