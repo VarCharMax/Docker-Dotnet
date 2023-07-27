@@ -1,8 +1,54 @@
 version: '3.4'
 
+volumes:
+  productdata:
+
+networks:
+  frontend:
+  backend:
+
 services:
-  exampleapp:
-    image: ${DOCKER_REGISTRY-}exampleapp
+  mysql:
+    image: 'arm64v8/mysql:8.0.34'
+    volumes:
+      - productdata:/var/lib/mysql
+    networks:
+      - backend
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysecret
+      - bind-address=0.0.0.0
+
+  dbinit:
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: Dockerfile.simple
+    networks:
+      - backend
+    environment:
+      - INITDB=true
+      - DBHOST=mysql
+    depends_on:
+      - mysql
+
+  mvc:
+    build:
+      context: .
+      dockerfile: Dockerfile.simple
+    networks:
+      - backend
+      - frontend
+    environment:
+      - DBHOST=mysql
+    depends_on:
+      - mysql
+
+  loadbalancer:
+    image: dockercloud/haproxy
+    ports:
+      - 3000:80
+    links:
+      - mvc
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - frontend

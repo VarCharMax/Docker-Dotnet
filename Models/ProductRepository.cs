@@ -1,9 +1,6 @@
-﻿using System;
-using System.Linq;
-
-namespace ExampleApp.Models
+﻿namespace ExampleApp.Models
 {
-	public class ProductRepository: IRepository
+    public class ProductRepository: IRepository
 	{
 		private ProductDbContext context;
 

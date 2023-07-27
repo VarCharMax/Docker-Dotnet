@@ -1,9 +1,33 @@
 using ExampleApp.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var config = new ConfigurationBuilder()
+    .AddCommandLine(args)
+    .AddEnvironmentVariables()
+    .Build();
+
+if ((config["INITDB"] ?? "false") == "true")
+{
+    Console.WriteLine("Preparing datatbase ...");
+    SeedData.EnsurePopulated(new ProductDbContext());
+    Console.WriteLine("Datatbase preparation complete");
+}
+else
+{
+    System.Console.WriteLine("Starting ASP.NET...");
+    var host1 = new WebHostBuilder()
+    .UseConfiguration(config)
+    .UseKestrel()
+    .UseContentRoot(Directory.GetCurrentDirectory())
+    .UseIISIntegration()
+    .Build();
+}
+
 var configuration = builder.Configuration;
+
 var host = configuration["DBHOST"] ?? "localhost";
 var port = configuration["DBPORT"] ?? "3306";
 var password = configuration["DBPASSWORD"] ?? "mysecret";
@@ -17,7 +41,6 @@ builder.Services.AddDbContext<ProductDbContext>(options =>
 
 builder.Services.AddSingleton<IConfiguration>(configuration);
 builder.Services.AddTransient<IRepository, ProductRepository>();
-
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -32,7 +55,6 @@ if (!app.Environment.IsDevelopment())
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -47,6 +69,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-SeedData.EnsurePopulated(app);
+// SeedData.EnsurePopulated(app);
 
 app.Run();

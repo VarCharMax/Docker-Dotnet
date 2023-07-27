@@ -19,7 +19,9 @@ ENV ASPNETCORE_URLS=http://+:5000
 WORKDIR /app
 COPY Scripts/ ./
 COPY sudoers /etc
+COPY node_modules/wait-for-it.sh/bin/wait-for-it /app/wait-for-it.sh
 
+RUN chmod +x /app/wait-for-it.sh
 RUN chmod +x installscript.sh
 RUN chmod +x create-dotnet-user.sh
 RUN ./installscript.sh
@@ -30,4 +32,9 @@ EXPOSE 5000
 
 COPY --from=publish /app/publish .
 
-ENTRYPOINT ["./ExampleApp"]
+ENV WAITHOST=mysql WAITPORT=3306
+
+ENTRYPOINT ./wait-for-it.sh $WAITHOST:$WAITPORT --timeout=0 \
+  && exec ExampleApp
+
+# ENTRYPOINT ["./ExampleApp"]
