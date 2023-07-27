@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "wait-for-it": "^1.0.0"
+    "wait-for-it.sh": "^1.0.0"
   }
 }

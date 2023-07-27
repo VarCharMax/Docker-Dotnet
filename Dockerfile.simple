@@ -1,4 +1,3 @@
-
 FROM mcr.microsoft.com/dotnet/sdk:7.0-alpine-arm64v8 AS publish
 WORKDIR /src
 COPY ["ExampleApp.csproj", "."]
@@ -7,25 +6,27 @@ RUN dotnet restore "./ExampleApp.csproj" --runtime alpine-arm64
 COPY . .
 
 RUN dotnet publish "ExampleApp.csproj" -c Release -o /app/publish \
-    --runtime alpine-arm64 \
-    --no-restore \
-    --self-contained true \
-    /p:PublishTrimmed=true \
-    /p:PublishSingleFile=true
+  --runtime alpine-arm64 \
+  --no-restore \
+  --self-contained true \
+  /p:PublishTrimmed=true \
+  /p:PublishSingleFile=true
 
 FROM mcr.microsoft.com/dotnet/runtime-deps:7.0-alpine3.17-arm64v8 AS final
 # Set server port
 ENV ASPNETCORE_URLS=http://+:5000
+
 WORKDIR /app
 COPY Scripts/ ./
 COPY sudoers /etc
-COPY node_modules/wait-for-it.sh/bin/wait-for-it /app/wait-for-it.sh
+COPY node_modules/wait-for-it.sh/bin/wait-for-it ./wait-for-it.sh
 
-RUN chmod +x /app/wait-for-it.sh
-RUN chmod +x installscript.sh
-RUN chmod +x create-dotnet-user.sh
-RUN ./installscript.sh
-RUN /usr/bin/expect ./create-dotnet-user.sh
+#
+RUN chmod +x wait-for-it.sh \
+  && chmod +x installscript.sh \
+  && chmod +x create-dotnet-user.sh \
+  && ./installscript.sh \
+  && /usr/bin/expect ./create-dotnet-user.sh
 
 USER dotnetuser
 EXPOSE 5000
@@ -34,7 +35,6 @@ COPY --from=publish /app/publish .
 
 ENV WAITHOST=mysql WAITPORT=3306
 
-ENTRYPOINT ./wait-for-it.sh $WAITHOST:$WAITPORT --timeout=0 \
-  && exec ExampleApp
+ENTRYPOINT ./wait-for-it.sh $WAITHOST:$WAITPORT --timeout=0 && exec dotnet ./ExampleApp
 
 # ENTRYPOINT ["./ExampleApp"]
