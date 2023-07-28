@@ -35,4 +35,4 @@ COPY --from=publish /app/publish .
 
 ENV WAITHOST=mysql WAITPORT=3306
 
-ENTRYPOINT ./wait-for-it.sh $WAITHOST:$WAITPORT --timeout=0 && exec ./ExampleApp
+ENTRYPOINT ./wait-for-it.sh $WAITHOST:$WAITPORT --timeout=0 && ./ExampleApp

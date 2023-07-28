@@ -37,15 +37,17 @@ services:
     networks:
       - backend
       - frontend
+    ports:
+      - 3000:5000
     environment:
       - DBHOST=mysql
     depends_on:
       - mysql
 
   loadbalancer:
-    image: dockercloud/haproxy
+    image: dockercloud/haproxy:1.2.1
     ports:
-      - 3000:5000
+      - 3000:80
     links:
       - mvc
     volumes:
