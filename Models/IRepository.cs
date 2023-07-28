@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace ExampleApp.Models
+﻿namespace ExampleApp.Models
 {
 	public interface IRepository
 	{

@@ -1,13 +1,11 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ExampleApp.Models;
-using Microsoft.Extensions.Configuration;
 
 namespace ExampleApp.Controllers;
 
 public class HomeController : Controller
 {
-    // private readonly ILogger<HomeController> _logger;
     private readonly IRepository repository;
     private readonly string message;
 

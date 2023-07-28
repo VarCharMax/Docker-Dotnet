@@ -4,7 +4,6 @@ namespace ExampleApp.Models
 {
 	public static class SeedData
 	{
-	
         public static void EnsurePopulated(IApplicationBuilder app)
         {
             EnsurePopulated(app.ApplicationServices.GetRequiredService<ProductDbContext>());
@@ -12,12 +11,12 @@ namespace ExampleApp.Models
 
         public static void EnsurePopulated(ProductDbContext context)
         {
-            System.Console.WriteLine("Applying Migrations...");
+            Console.WriteLine("Applying Migrations...");
 
             context.Database.Migrate();
             if (!context.Products.Any())
             {
-                System.Console.WriteLine("Creating Seed Data...");
+                Console.WriteLine("Creating Seed Data...");
 
                 context.Products.AddRange(new Product("Kayak", "Watersports", 275),
                     new Product("Lifejacket", "Watersports", 48.95m),
@@ -33,7 +32,7 @@ namespace ExampleApp.Models
             }
             else
             {
-                System.Console.WriteLine("Seed Data Not Required...");
+                Console.WriteLine("Seed Data Not Required...");
             }
         }
 	}

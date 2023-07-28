@@ -2,7 +2,7 @@
 {
     public class ProductRepository: IRepository
 	{
-		private ProductDbContext context;
+		private readonly ProductDbContext context;
 
 		public ProductRepository(ProductDbContext ctx)
 		{
