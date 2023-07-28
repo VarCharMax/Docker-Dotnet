@@ -1,12 +1,12 @@
 ﻿using ExampleApp.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExampleApp
 {
     public class Startup {
 
-        private IConfigurationRoot Configuration;
+        private readonly IConfigurationRoot Configuration;
 
         public Startup(IWebHostEnvironment env) {
             Configuration = new ConfigurationBuilder()
@@ -51,7 +51,7 @@ namespace ExampleApp
             app.UseRouting();
             // Must be declared before Authentication.
             app.UseForwardedHeaders(new ForwardedHeadersOptions {
-                //Forward client IP and originating scheme. This is mainly to support HTTPS redirects.
+                //Forward client IP and originating scheme (HTTP/HTTPS). This is to support HTTPS redirects.
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
             app.UseAuthorization();

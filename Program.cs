@@ -8,9 +8,9 @@ var config = new ConfigurationBuilder()
 
 if ((config["INITDB"] ?? "false") == "true")
 {
-    Console.WriteLine("Preparing datatbase ...");
+    Console.WriteLine("Preparing database ...");
     SeedData.EnsurePopulated(new ProductDbContext());
-    Console.WriteLine("Datatbase preparation complete");
+    Console.WriteLine("Database preparation complete");
 }
 else
 {
@@ -21,6 +21,6 @@ else
     .UseContentRoot(Directory.GetCurrentDirectory())
     .UseStartup<Startup>()
     .Build();
-    
+
     host.Run();
 }
