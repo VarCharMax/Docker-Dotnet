@@ -1,5 +1,6 @@
 ﻿using ExampleApp.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace ExampleApp
 {
@@ -35,13 +36,12 @@ namespace ExampleApp
 
             if (!env.IsDevelopment())
             {
+                app.UseHsts();
                 app.UseExceptionHandler("/Home/Error");
             }
-
-            if (!env.IsDevelopment())
+            else
             {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
+                app.UseDeveloperExceptionPage();
             }
 
             app.UseStaticFiles();
@@ -49,6 +49,11 @@ namespace ExampleApp
             app.UseStatusCodePages();
             app.UseStaticFiles();
             app.UseRouting();
+            // Must be declared before Authentication.
+            app.UseForwardedHeaders(new ForwardedHeadersOptions {
+                //Forward client IP and originating scheme. This is mainly to support HTTPS redirects.
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
