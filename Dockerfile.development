@@ -4,7 +4,7 @@ COPY node_modules/wait-for-it.sh/bin/wait-for-it /tools/wait-for-it.sh
 COPY Scripts/ ./
 COPY sudoers /etc
 
-RUN chmod +x wait-for-it.sh \
+RUN chmod +x /tools/wait-for-it.sh \
   && chmod +x installscript.sh \
   && chmod +x create-dotnet-user.sh \
   && ./installscript.sh \
