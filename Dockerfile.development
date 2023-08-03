@@ -6,9 +6,7 @@ COPY sudoers /etc
 
 RUN chmod +x /tools/wait-for-it.sh \
   && chmod +x installscript.sh \
-  && chmod +x create-dotnet-user.sh \
-  && ./installscript.sh \
-  && /usr/bin/expect ./create-dotnet-user.sh
+  && ./installscript.sh
 
 ENV DBHOST=dev_mysql WAITHOST=dev_mysql WAITPORT=3306
 
