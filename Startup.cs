@@ -38,11 +38,11 @@ namespace ExampleApp
             {
                 app.UseHsts();
                 app.UseExceptionHandler("/Home/Error");
-                SeedData.EnsurePopulated(app);
             }
             else
             {
                 app.UseDeveloperExceptionPage();
+                SeedData.EnsurePopulated(app);
             }
 
             app.UseStaticFiles();
