@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0-alpine-arm64v8 AS publish
+FROM mcr.microsoft.com/dotnet/sdk:7.0.306-bullseye-slim-arm64v8 AS publish
 WORKDIR /src
 COPY ["ExampleApp.csproj", "."]
 
@@ -14,8 +14,9 @@ RUN dotnet publish "ExampleApp.csproj" -c Release -o /app/publish \
   /p:PublishSingleFile=true
 
 FROM mcr.microsoft.com/dotnet/runtime-deps:7.0-alpine3.17-arm64v8 AS final
-# Set server port
-ENV ASPNETCORE_URLS=http://+:5000
+
+
+WORKDIR /app
 
 WORKDIR /app
 COPY Scripts/ ./
@@ -25,11 +26,11 @@ COPY node_modules/wait-for-it.sh/bin/wait-for-it ./wait-for-it.sh
 RUN chmod +x wait-for-it.sh \
   && chmod +x installscript.sh \
   && chmod +x create-dotnet-user.sh \
-  && ./installscript.sh \
-  && /usr/bin/expect ./create-dotnet-user.sh
+  && ./installscript.sh
+  # && /usr/bin/expect ./create-dotnet-user.sh
 
-USER dotnetuser
-EXPOSE 5000/tcp
+# USER dotnetuser
+EXPOSE 80/tcp 443/tcp
 
 COPY --from=publish /app/publish .
 

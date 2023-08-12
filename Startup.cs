@@ -38,6 +38,7 @@ namespace ExampleApp
             {
                 app.UseHsts();
                 app.UseExceptionHandler("/Home/Error");
+                SeedData.EnsurePopulated(app);
             }
             else
             {
@@ -49,11 +50,14 @@ namespace ExampleApp
             app.UseStatusCodePages();
             app.UseStaticFiles();
             app.UseRouting();
+
             // Must be declared before Authentication.
+            
             app.UseForwardedHeaders(new ForwardedHeadersOptions {
                 //Forward client IP and originating scheme (HTTP/HTTPS). This is to support HTTPS redirects.
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+                // ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

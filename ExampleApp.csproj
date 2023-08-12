@@ -13,9 +13,11 @@
 
   <ItemGroup>
     <None Remove="Models\" />
+    <None Remove="Certs\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="Certs\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />

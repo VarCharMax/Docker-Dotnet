@@ -1,9 +1,0 @@
-FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine-arm64v8
-
-VOLUME /data
-
-WORKDIR /data
-
-ENTRYPOINT (test -e message.txt && echo "File Exists" \
-  || (echo "Creating File ..." \
-  && echo Hello Docker $(date '+%X') > message.txt)) && cat message.txt
