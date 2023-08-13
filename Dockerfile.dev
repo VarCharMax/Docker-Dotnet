@@ -8,13 +8,12 @@ ENV DBHOST=dev_mysql WAITHOST=dev_mysql WAITPORT=3306
 
 ENV DOTNET_USE_POLLING_FILE_WATCHER=true
 
-EXPOSE 80 443
+EXPOSE 80/tcp
 
 VOLUME /app
 
 WORKDIR /app
 
-ENTRYPOINT dotnet restore \
-  && /tools/wait-for-it.sh $WAITHOST:$WAITPORT --timeout=0 \
-  && dotnet watch run --environment=Development
+ENTRYPOINT /tools/wait-for-it.sh $WAITHOST:$WAITPORT --timeout=0 \
+  && dotnet watch --project ExampleApp.csproj run -- --project ExampleApp.csproj
   
