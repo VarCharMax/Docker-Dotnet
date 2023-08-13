@@ -1,7 +1,6 @@
-﻿using System;
-namespace ExampleApp.Models
+﻿namespace ExampleApp.Models
 {
-	public class Product
+    public class Product
 	{
 		public Product()
 		{
